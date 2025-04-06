@@ -1,4 +1,3 @@
-
 name: Deploy Website
 
 on:
@@ -13,13 +12,13 @@ jobs:
       - name: Checkout del código
         uses: actions/checkout@v4
 
-      - name: Instalar html-validate
+      - name: Instalar dependencias
         run: npm install -g html-validate
 
       - name: Validar HTML
         run: html-validate index.html
 
-  build:
+  deploy:
     needs: validate-html
     runs-on: ubuntu-latest
     steps:
@@ -29,77 +28,5 @@ jobs:
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v4
 
-      - name: Subir archivos
+      - name: Publicar en Github Pages
         uses: actions/upload-pages-artifact@v3
-        with:
-          path: . # Ajusta si tu HTML está en una carpeta específica (como 'dist' o 'public')
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Desplegar a GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-
-
-
-# name: Deploy Website
-
-# on:
-#   push:
-#     branches:
-#       - main
-
-# jobs:
-#   validate-html:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout del código
-#         uses: actions/checkout@v3.5.3
-
-#       - name: Instalar html-validate
-#         run: npm install -g html-validate
-
-#       - name: Validar HTML
-#         run: html-validate index.html
-
-#   build:
-#     needs: validate-html
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout del código
-#         uses: actions/checkout@v3.5.3
-
-#       - name: Configurar GitHub Pages
-#         uses: actions/configure-pages@v3.0.6
-
-#       - name: Subir archivos
-#         uses: actions/upload-pages-artifact@v2.0.0
-#         with:
-#           path: . # Ajusta si tu HTML está en una carpeta específica (como 'dist' o 'public')
-
-#   deploy:
-#     needs: build
-#     runs-on: ubuntu-latest
-#     permissions:
-#       pages: write
-#       id-token: write
-
-#     environment:
-#       name: github-pages
-#       url: ${{ steps.deployment.outputs.page_url }}
-
-#     steps:
-#       - name: Desplegar a GitHub Pages
-#         id: deployment
-#         uses: actions/deploy-pages@v2.0.0
-
