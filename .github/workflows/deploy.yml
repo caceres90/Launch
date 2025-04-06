@@ -12,13 +12,13 @@ jobs:
       - name: Checkout del código
         uses: actions/checkout@v3
 
-      - name: Instalar dependencias
+      - name: Instalar html-validate
         run: npm install -g html-validate
 
       - name: Validar HTML
         run: html-validate index.html
 
-  deploy:
+  build:
     needs: validate-html
     runs-on: ubuntu-latest
     steps:
@@ -28,5 +28,24 @@ jobs:
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v3
 
-      - name: Publicar en Github Pages
+      - name: Subir archivos
         uses: actions/upload-pages-artifact@v2
+        with:
+          path: . # Ajusta si tu HTML está en una carpeta específica (como 'dist' o 'public')
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Desplegar a GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
+
